@@ -3,7 +3,7 @@ services:
     name: ai-dialogue-bot
     env: python
     pythonVersion: "3.12"
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "pip install --only-binary=:all: -r requirements.txt"
     startCommand: "python main.py"
     envVars:
       - key: BOT_TOKEN
