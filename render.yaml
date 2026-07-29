@@ -1,0 +1,34 @@
+services:
+  - type: worker
+    name: ai-dialogue-bot
+    runtime: python
+    pythonVersion: "3.11"
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_BASE_URL
+        value: https://api.openai.com/v1
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: OPENAI_TEMPERATURE
+        value: "0.7"
+      - key: OPENAI_MAX_TOKENS
+        value: "2000"
+      - key: DATABASE_URL
+        value: sqlite+aiosqlite:///./data/bot.db
+      - key: LOG_LEVEL
+        value: INFO
+      - key: LOG_FILE
+        value: logs/bot.log
+      - key: MAX_HISTORY_MESSAGES
+        value: "20"
+    disk:
+      name: data
+      mountPath: /opt/render/project/data
+      sizeGB: 1
+    healthCheckPath: /health
+    autoDeploy: false
