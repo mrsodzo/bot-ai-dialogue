@@ -3,7 +3,10 @@ services:
     name: ai-dialogue-bot
     runtime: python
     pythonVersion: "3.11"
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      export CARGO_HOME=/opt/render/project/.cargo
+      mkdir -p $CARGO_HOME
+      pip install --prefer-binary -r requirements.txt
     startCommand: python main.py
     envVars:
       - key: BOT_TOKEN
@@ -30,5 +33,4 @@ services:
       name: data
       mountPath: /opt/render/project/data
       sizeGB: 1
-    healthCheckPath: /health
     autoDeploy: false
