@@ -1,13 +1,10 @@
 services:
   - type: worker
     name: ai-dialogue-bot
-    runtime: python
-    pythonVersion: "3.11"
-    buildCommand: |
-      export CARGO_HOME=/opt/render/project/.cargo
-      mkdir -p $CARGO_HOME
-      python3.11 -m pip install --prefer-binary -r requirements.txt
-    startCommand: python3.11 main.py
+    env: python
+    pythonVersion: "3.12"
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"
     envVars:
       - key: BOT_TOKEN
         sync: false
@@ -17,20 +14,9 @@ services:
         value: https://api.openai.com/v1
       - key: OPENAI_MODEL
         value: gpt-4o-mini
-      - key: OPENAI_TEMPERATURE
-        value: "0.7"
-      - key: OPENAI_MAX_TOKENS
-        value: "2000"
       - key: DATABASE_URL
         value: sqlite+aiosqlite:///./data/bot.db
       - key: LOG_LEVEL
         value: INFO
       - key: LOG_FILE
         value: logs/bot.log
-      - key: MAX_HISTORY_MESSAGES
-        value: "20"
-    disk:
-      name: data
-      mountPath: /opt/render/project/data
-      sizeGB: 1
-    autoDeploy: false
