@@ -6,8 +6,8 @@ services:
     buildCommand: |
       export CARGO_HOME=/opt/render/project/.cargo
       mkdir -p $CARGO_HOME
-      pip install --prefer-binary -r requirements.txt
-    startCommand: python main.py
+      python3.11 -m pip install --prefer-binary -r requirements.txt
+    startCommand: python3.11 main.py
     envVars:
       - key: BOT_TOKEN
         sync: false
