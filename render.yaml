@@ -1,5 +1,5 @@
 services:
-  - type: worker
+  - type: web
     name: ai-dialogue-bot
     env: python
     pythonVersion: "3.12"
@@ -20,3 +20,4 @@ services:
         value: INFO
       - key: LOG_FILE
         value: logs/bot.log
+    healthCheckPath: /health

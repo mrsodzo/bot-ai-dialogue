@@ -1,5 +1,8 @@
 import asyncio
 import logging
+import os
+
+from aiohttp import web
 
 from bot.config import settings
 from bot.db import init_db, close_db
@@ -16,11 +19,29 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 
+async def health_check(request):
+    return web.Response(text="OK")
+
+
+async def start_health_server():
+    app = web.Application()
+    app.router.add_get("/health", health_check)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    port = int(os.getenv("PORT", "10000"))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    logger.info(f"Health check server started on port {port}")
+    return runner
+
+
 async def main() -> None:
     logger.info("Starting bot...")
 
     await init_db()
     logger.info("Database initialized")
+
+    health_runner = await start_health_server()
 
     bot = Bot(
         token=settings.bot_token,
@@ -35,6 +56,7 @@ async def main() -> None:
     try:
         await dp.start_polling(bot)
     finally:
+        await health_runner.cleanup()
         await bot.session.close()
         await close_db()
         await close_ai_client()
